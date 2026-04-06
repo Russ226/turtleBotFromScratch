@@ -123,7 +123,11 @@ void setup() {
   pinMode(r_gpio_p, OUTPUT);
   pinMode(r_gpio_n, OUTPUT);
   pinMode(l_gpio_p, OUTPUT);
-  pinMode(l_gpio_n, OUTPUT); 
+  pinMode(l_gpio_n, OUTPUT);
+  digitalWrite(r_gpio_p, LOW);
+  digitalWrite(r_gpio_n, LOW);
+  digitalWrite(l_gpio_p, LOW);
+  digitalWrite(l_gpio_n, LOW); 
   
   delay(2000);
 

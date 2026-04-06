@@ -33,7 +33,8 @@ private:
   rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr dirPb_;
   rclcpp::TimerBase::SharedPtr timer_;
   int curDir_ = 5;
-  float minDistance_ =0.50;
+  float minDistance_ =0.10;
+  float lidirOffsetLeft_ = .10;
 
   double minValidRange(const sensor_msgs::msg::LaserScan::SharedPtr msg, int start_idx, int end_idx) {
     double min_range = std::numeric_limits<double>::infinity();
@@ -67,7 +68,7 @@ private:
     if (front_min > minDistance_) {
         curDir_ = 5;
     }
-    else if(left_min > minDistance_){
+    else if(left_min > (minDistance_ - lidirOffsetLeft_)){
         curDir_ = 3;
     }
     else if(right_min > minDistance_){

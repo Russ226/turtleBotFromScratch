@@ -9,22 +9,11 @@ from launch.substitutions import PathJoinSubstitution
 def generate_launch_description():
 
     include_child_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            PathJoinSubstitution([
-                FindPackageShare('ldlidar_stl_ros2'),
-                'launch',
-                'd19.launch.py'
-            ])
-        )
+        PythonLaunchDescriptionSource(os.path.expanduser('~/fromScratchTurtleBot/src/ldlidar_stl_ros2/launch/ld19.launch.py'))
     )
     return LaunchDescription([
         include_child_launch,
         Node(
-            package='obs_avoid',
-            executable='avoid_calc',
-            name='avoid_calc',
-        ),
-         Node(
             package='micro_ros_agent',
             executable='micro_ros_agent',
             name='micro_ros_agent_node',
@@ -33,5 +22,10 @@ def generate_launch_description():
             arguments=['serial', '--dev', '/dev/ttyUSB0']
             # Define arguments for Serial transport (e.g., replace '/dev/ttyUSB0' with your port)
             # arguments=['serial', '--dev', '/dev/ttyUSB0']
+        ),
+        Node(
+            package='obs_avoid',
+            executable='avoid_calc',
+            name='avoid_calc'
         )
     ])
