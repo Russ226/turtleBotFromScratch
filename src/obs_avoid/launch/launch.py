@@ -19,7 +19,7 @@ def generate_launch_description():
             name='micro_ros_agent_node',
             output='screen',
             # Define arguments for UDP transport (e.g., port 8888)
-            arguments=['serial', '--dev', '/dev/ttyUSB0']
+            arguments=['serial', '--dev', '/dev/ttyACM0']
             # Define arguments for Serial transport (e.g., replace '/dev/ttyUSB0' with your port)
             # arguments=['serial', '--dev', '/dev/ttyUSB0']
         ),
