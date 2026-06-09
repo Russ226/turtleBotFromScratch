@@ -25,7 +25,7 @@ void setup() {
     started = true;
     Serial.println("Drive robot exactly 1m then press reset or modify code to stop motors.");
 }
-
+int count = 0;
 void loop() {
     if (!started || finished) {
         delay(200);
@@ -34,11 +34,17 @@ void loop() {
 
     // You might manually stop, or add a timed stop; for pure calibration,
     // just watch counts while you move and then press reset.
+    wireWriteDataArray(MOTOR_FIXED_SPEED_ADDR, car_forward, 4);
     int32_t counts[4];
     if (readMotorEncoderTotals(counts)) {
         Serial.print("Current L: "); Serial.print(counts[0]);
         Serial.print("  Current R: "); Serial.println(counts[1]);
     }
-
+    count++;
+    if(count > 50){
+      wireWriteDataArray(MOTOR_FIXED_SPEED_ADDR, car_stop, 4);
+      finished =true;
+      return;
+    }
     delay(200);
 }
