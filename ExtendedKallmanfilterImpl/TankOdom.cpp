@@ -20,7 +20,7 @@ void tankOdomUpdate(int32_t delta_counts_left, int32_t delta_counts_right)
 
     // 2. Track kinematics: arc distance and heading change
     float dS    = 0.5f * (dL + dR);                    // center travel
-    float dYaw  = (dR - dL) / TRACK_BASELINE_M;        // heading change
+    float dYaw  = (YAW_SCALE *(dR - dL) )/ TRACK_BASELINE_M;        // heading change
     float yaw_mid = tank_yaw_rad + 0.5f * dYaw;
 
     // 3. Update pose in world frame
