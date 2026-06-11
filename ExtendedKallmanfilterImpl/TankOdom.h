@@ -14,4 +14,5 @@ void tankOdomReset(float x = 0.0f, float y = 0.0f, float yaw = 0.0f);
 
 void tankOdomUpdate(int32_t delta_counts_left, int32_t delta_counts_right);
 // x, y, pheta
-void getVector(float vec[3]);
+void getCurrentDir(float vec[3]);
+void getLastDir(float vec[3]);

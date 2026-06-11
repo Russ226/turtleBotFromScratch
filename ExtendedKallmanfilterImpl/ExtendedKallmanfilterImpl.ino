@@ -3,6 +3,7 @@
 #include "EncoderMotor.h"
 #include "TankOdom.h"
 #include <MPU6050_light.h>
+#include "EKF.h"
 
 #define IMU_I2C_SDA 7
 #define IMU_I2C_SCL 6
@@ -21,7 +22,7 @@ MPU6050 mpu(I2C_IMU);
 int32_t prev_counts_left = 0;
 int32_t prev_counts_right = 0;
 bool first_read = true;
-
+ExtendedKalmanFilter *ekf = nullptr;
 void setup() {
   Serial.begin(115200);
   Wire.begin(9,8);
@@ -30,15 +31,7 @@ void setup() {
   I2C_ENCODER.begin(ENC_I2C_SDA, ENC_I2C_SCL, 400000);
   delay(200);
 
-  byte status = mpu.begin();
-  Serial.print(F("MPU6050 status: "));
-  Serial.println(status);
-  if (status != 0) {
-    Serial.println(F("MPU6050 init failed"));
-    while (1) { delay(100); }
-  }
-  setupMotor();
-  tankOdomReset();
+  ekf = new ExtendedKalmanFilter(mpu);
   Serial.println("start");
 }
 int count = 0;
@@ -65,7 +58,7 @@ void caliTest1(){
     }
 
     float vec[3];
-    getVector(vec);
+    getCurrentDir(vec);
     Serial.print("x: ");
     Serial.print(vec[0], 3);
     Serial.print("  y: ");
@@ -108,7 +101,7 @@ void caliTest2(){
     }
 
     float vec[3];
-    getVector(vec);
+    getCurrentDir(vec);
     Serial.print("x: ");
     Serial.print(vec[0], 3);
     Serial.print("  y: ");
@@ -128,18 +121,16 @@ void caliTest2(){
 }
 
 void loop() {
-  caliTest2();
-   mpu.update();  // must be called regularly
+  if (count < 32) {
 
-    // raw gyro Z in deg/s (library uses deg/s)
-    float gyroZ_dps = mpu.getGyroZ();
-    // convert to rad/s for EKF
-    const float DEG2RAD = 3.14159265f / 180.0f;
-    float gyroZ_rad_s = gyroZ_dps * DEG2RAD;
+    wireWriteDataArray(MOTOR_FIXED_SPEED_ADDR, car_forward, 4);
+    delay(10);
+    ekf->update();
+    delay(50);
+    count++;
+  }else{
+    wireWriteDataArray(MOTOR_FIXED_SPEED_ADDR, car_stop, 4);
 
-    Serial.print(F("gyroZ_dps: "));
-    Serial.print(gyroZ_dps);
-    Serial.print(F("  gyroZ_rad_s: "));
-    Serial.println(gyroZ_rad_s);
-    delay(20);
+  }
+
 }
