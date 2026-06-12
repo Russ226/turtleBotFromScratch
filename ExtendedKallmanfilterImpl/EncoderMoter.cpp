@@ -5,8 +5,8 @@ uint8_t MotorEncoderPolarity = 0;
 
 int8_t car_forward[4] = { -23, -23, 0, 0 };
 int8_t car_retreat[4] = { 23, 23, 0, 0 };
-int8_t car_turnRight[4] = { 0, 23, 0, 0 };
-int8_t car_turnLeft[4] = { 23, 0, 0, 0 };
+int8_t car_turnRight[4] = { 0, -23, 0, 0 };
+int8_t car_turnLeft[4] = { -23, 0, 0, 0 };
 int8_t car_stop[4] = { 0, 0, 0, 0 };
 
 bool wireWriteByte(uint8_t val) {

@@ -7,6 +7,8 @@ float tank_yaw_rad = 0.0f;
 float last_x_m = 0.0f;
 float last_y_m = 0.0f;
 float last_yaw_rad = 0.0f;
+float distance = 0.0f;
+float total_distance = 0.0f;
 
 void tankOdomReset(float x, float y, float yaw)
 {
@@ -25,14 +27,18 @@ void tankOdomUpdate(int32_t delta_counts_left, int32_t delta_counts_right)
     float dR = RIGHT_SIGN * delta_counts_right * meters_per_count_right;
 
     // 2. Track kinematics: arc distance and heading change
-    float dS    = 0.5f * (dL + dR);                    // center travel
+    float dS = 0.5f * (dL + dR);                    // center travel
     float dYaw  = (YAW_SCALE *(dR - dL) )/ TRACK_BASELINE_M;        // heading change
     float yaw_mid = tank_yaw_rad + 0.5f * dYaw;
 
     // 3. Update pose in world frame
-    tank_x_m    += dS * cosf(yaw_mid);
-    tank_y_m    += dS * sinf(yaw_mid);
+    tank_x_m += dS * cosf(yaw_mid);
+    tank_y_m += dS * sinf(yaw_mid);
     tank_yaw_rad += dYaw;
+
+    distance = 0.5f * (dL + dR);
+    total_distance += distance;
+  
 }
 
 void getCurrentDir(float vec[3]){
@@ -45,4 +51,12 @@ void getLastDir(float vec[3]){
   vec[0] = last_x_m;
   vec[1] = last_y_m;
   vec[2] = last_yaw_rad;
+}
+
+float getDistance(){
+  return distance;
+}
+
+float getTotalDistance(){
+  return total_distance;
 }

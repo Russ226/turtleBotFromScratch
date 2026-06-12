@@ -36,7 +36,7 @@ void setup() {
 }
 int count = 0;
 void caliTest1(){
-  if (count < 25) {
+  if (count < 50 *4) {
 
     wireWriteDataArray(MOTOR_FIXED_SPEED_ADDR, car_forward, 4);
     delay(10);
@@ -79,9 +79,9 @@ void caliTest1(){
   
 
 void caliTest2(){
-  if (count < 32) {
+  if (count < 21 * 4) {
 
-    wireWriteDataArray(MOTOR_FIXED_SPEED_ADDR, car_turnRight, 4);
+    wireWriteDataArray(MOTOR_FIXED_SPEED_ADDR, car_turnLeft, 4);
     delay(10);
 
 
@@ -120,17 +120,43 @@ void caliTest2(){
 
 }
 
-void loop() {
-  if (count < 32) {
+void yawEKFTest(){
 
-    wireWriteDataArray(MOTOR_FIXED_SPEED_ADDR, car_forward, 4);
-    delay(10);
-    ekf->update();
-    delay(50);
-    count++;
+  if(count < 97 * 4){
+    wireWriteDataArray(MOTOR_FIXED_SPEED_ADDR, car_turnLeft, 4);
   }else{
+
     wireWriteDataArray(MOTOR_FIXED_SPEED_ADDR, car_stop, 4);
-
+    Serial.print("stop");
   }
+  ekf->update();
+  count++;
+  delay(10);
+}
 
+void dirEKFTest1(){
+
+  if(count < 97 * 12){
+    wireWriteDataArray(MOTOR_FIXED_SPEED_ADDR, car_forward, 4);
+  }else{
+
+    wireWriteDataArray(MOTOR_FIXED_SPEED_ADDR, car_stop, 4);
+    Serial.print("stop");
+  }
+  ekf->update();
+  float vec[3];
+    getCurrentDir(vec);
+    Serial.print("odom\nx: ");
+    Serial.print(vec[0], 3);
+    Serial.print("  y: ");
+    Serial.print(vec[1], 3);
+    Serial.print("  yaw: ");
+    Serial.println(vec[2], 3);
+  count++;
+  delay(10);
+}
+
+
+void loop() {
+  dirEKFTest1();
 }

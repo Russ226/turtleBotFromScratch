@@ -5,7 +5,7 @@
 
 #define TRACK_LENGTH_M 0.26035f
 #define TRACK_HEIGHT_M 0.0762f
-#define WHEELBASE_DISTANCE_M 0.111125f
+#define WHEELBASE_DISTANCE_M 0.111125f/ 1.5f
 #define DRIVE_DIAMETER_M 0.0508f
 
 #define I2C_ADDR 0x34
@@ -28,6 +28,7 @@ extern uint8_t MotorEncoderPolarity;
 extern int8_t car_forward[4];
 extern int8_t car_retreat[4];
 extern int8_t car_turnRight[4];
+extern int8_t car_turnLeft[4];
 extern int8_t car_stop[4];
 
 bool wireWriteByte(uint8_t val);

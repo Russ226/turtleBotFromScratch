@@ -18,9 +18,13 @@ class ExtendedKalmanFilter {
     const float Q_omega = .0001f;              // process noise on omega (encoder uncertainty)
     const float R_omega = .00005f;              // measurement noise on IMU omega
     const float DEG2RAD = 3.14159265f / 180.0f;
+    float gyro_bias_z = 0.0f;
     float ekf_theta = 0.0f;
     float ekf_omega = 0.0f;
-    float covariance_m[][2] = { {1.0f, 0.0f}, {0.0f, 1.0f} };
+    float ekf_x = 0.0f;
+    float ekf_y = 0.0f;
+    float covariance_m[2][2] = { {1.0f, 0.0f}, {0.0f, 1.0f} };
 
-    void ExtendedKalmanFilter::ekfYawStep(float dt, float omega_enc, float omega_imu);
+    void ekfYawStep(float dt, float omega_enc, float omega_imu);
+    void calibrateGyroBias(); 
 };
