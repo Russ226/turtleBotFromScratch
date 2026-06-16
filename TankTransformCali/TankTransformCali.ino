@@ -3,7 +3,7 @@
 #include "EncoderMotor.h"
 #include "TankOdom.h"
 #include <MPU6050_light.h>
-
+#include "TankMotion.h"
 
 #define IMU_I2C_SDA 7
 #define IMU_I2C_SCL 6
@@ -18,6 +18,7 @@ TwoWire I2C_ENCODER = TwoWire(0);
 TwoWire I2C_IMU     = TwoWire(1);
 
 MPU6050 mpu(I2C_IMU);
+TankMotion *tk = nullptr;
 int32_t prev_counts_left = 0;
 int32_t prev_counts_right = 0;
 bool first_read = true;
@@ -29,6 +30,7 @@ void setup() {
 
   I2C_IMU.begin(IMU_I2C_SDA, IMU_I2C_SCL, 400000);
   I2C_ENCODER.begin(ENC_I2C_SDA, ENC_I2C_SCL, 400000);
+  tk = new TankMotion(mpu);
   delay(200);
 
   Serial.println("start");
@@ -36,6 +38,13 @@ void setup() {
 
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  if(count == 0) {
+    Serial.println("starting to go forward");
+    tk->forward(0.7f);
+    count++;
+  }else{
+    //Serial.println("finished moving");
+    wireWriteDataArray(MOTOR_FIXED_SPEED_ADDR, car_stop, 4);
+  }
 
 }

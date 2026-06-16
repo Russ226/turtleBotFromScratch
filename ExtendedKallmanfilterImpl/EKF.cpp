@@ -30,7 +30,7 @@ void ExtendedKalmanFilter::calibrateGyroBias() {
   for (int i = 0; i < N; i++) {
     mpu.update();
     float gyroZ_dps   = mpu.getGyroZ();
-    float gyroZ_rad_s = gyroZ_dps * DEG2RAD;
+    float gyroZ_rad_s = gyroZ_dps * deg2rad;
     sum += gyroZ_rad_s;
     delay(5);
   }
@@ -76,7 +76,7 @@ void ExtendedKalmanFilter::update(){
     lastMicros = now;
 
     float gyroZ_dps = mpu.getGyroZ();
-    float gyroZ_rad_s = (gyroZ_dps * DEG2RAD) - gyro_bias_z;
+    float gyroZ_rad_s = (gyroZ_dps * deg2rad) - gyro_bias_z;
 
     float dYaw_enc = cur_vec[2] - prev_vec[2];
     float omega_enc = dYaw_enc / dt;
