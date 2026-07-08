@@ -15,7 +15,7 @@ class TankMotion {
     private:
         MPU6050 mpu;
         const float cart_margin_err = 0.05f;
-        const float angle_margin_err = 1.0f;
+        const float angle_margin_err = 0.0002f;
         const int max_speed_f = -46;
         const int max_speed_r = 46;
         const int base_speed_f = -23;
@@ -25,6 +25,7 @@ class TankMotion {
         int32_t prev_counts_left = 0;
         int32_t prev_counts_right = 0;
         bool first_read = true;
+        float correction_amount = 1.2f;  
         
         void updateOdom();
         void calibrateGyroBias();

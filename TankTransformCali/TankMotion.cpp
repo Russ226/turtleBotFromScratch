@@ -3,6 +3,7 @@
 #include "EncoderMotor.h"
 #include "TankOdom.h"
 #include <MPU6050_light.h>
+#include <cmath> 
 
 TankMotion::TankMotion(MPU6050 &m): mpu(m){
     setupMotor();
@@ -21,24 +22,36 @@ TankMotion::TankMotion(MPU6050 &m): mpu(m){
 
 void TankMotion::forward(float magn_x){
   float cur_dir[3];
-
+  float correction = 0;
+  int left_m  = base_speed_f;
+  int right_m = base_speed_f;
   do{
     updateOdom();
     getCurrentDir(cur_dir);
 
+
     float err = magn_x - cur_dir[0];
     if (err <= cart_margin_err) break;
 
-    float correction = 5.0f * cur_dir[2];
-    int left_m  = (int)(base_speed_f - correction);
-    int right_m = (int)(base_speed_f + correction);
-    clamp(left_m, right_m);
+    Serial.print("yaw ammount:");
+    Serial.println(cur_dir[2]);
+    if (std::abs(cur_dir[2]) >= angle_margin_err) {
+                           
+        float correction = correction_amount * cur_dir[2];  
 
+        int left_m  = (int)(base_speed_f - correction);
+        int right_m = (int)(base_speed_f + correction);
+
+        clamp(left_m, right_m);
+
+        int8_t cmd[4] = { (int8_t)left_m, (int8_t)right_m, 0, 0 };
+        wireWriteDataArray(MOTOR_FIXED_SPEED_ADDR, cmd, 4);
+      }
     int8_t cmd[4] = { (int8_t)left_m, (int8_t)right_m, 0, 0 };
     wireWriteDataArray(MOTOR_FIXED_SPEED_ADDR, cmd, 4);
-
+    
     delay(5);
-    printOdom();
+    //printOdom();
   }while (true);
 
   int8_t stop_cmd[4] = {0, 0, 0, 0};
@@ -48,24 +61,37 @@ void TankMotion::forward(float magn_x){
 
 void TankMotion::reverse(float magn_x){
   float cur_dir[3];
-
-  do {
+  float correction = 0;
+  int left_m  = base_speed_f;
+  int right_m = base_speed_f;
+  do{
     updateOdom();
     getCurrentDir(cur_dir);
+
 
     float err = cur_dir[0] - magn_x;
     if (err <= cart_margin_err) break;
 
-    float correction = 5.0f * cur_dir[2];
-    int left_m  = (int)(base_speed_f - correction);
-    int right_m = (int)(base_speed_f + correction);
-    clamp(left_m, right_m);
+    //Serial.print("yaw ammount:");
+    //Serial.println(cur_dir[2]);
+    if (std::abs(cur_dir[2]) >= angle_margin_err) {
+                           
+        float correction = correction_amount * cur_dir[2];  
 
+        int left_m  = (int)(base_speed_f - correction);
+        int right_m = (int)(base_speed_f + correction);
+
+        clamp(left_m, right_m);
+
+        int8_t cmd[4] = { (int8_t)left_m, (int8_t)right_m, 0, 0 };
+        wireWriteDataArray(MOTOR_FIXED_SPEED_ADDR, cmd, 4);
+      }
     int8_t cmd[4] = { (int8_t)left_m, (int8_t)right_m, 0, 0 };
     wireWriteDataArray(MOTOR_FIXED_SPEED_ADDR, cmd, 4);
-
+    
     delay(5);
-  }while(true);
+    //printOdom();
+  }while (true);
 
   int8_t stop_cmd[4] = {0, 0, 0, 0};
   wireWriteDataArray(MOTOR_FIXED_SPEED_ADDR, stop_cmd, 4);

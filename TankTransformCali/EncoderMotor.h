@@ -8,7 +8,7 @@
 #define WHEELBASE_DISTANCE_M 0.111125f/ 1.5f
 #define DRIVE_DIAMETER_M 0.0508f
 
-#define I2C_ADDR 0x34
+#define I2C_ADDR 0x24
 
 #define ADC_BAT_ADDR 0
 #define MOTOR_TYPE_ADDR 20
